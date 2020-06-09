@@ -1,0 +1,11 @@
+
+# IDE
+.vs
+.idea
+
+Builds
+Temp
+Logs
+
+**/*.meta
+**/*.csproj
