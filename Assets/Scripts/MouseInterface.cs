@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 
 public class MouseInterface : UserInterface 
 {
-    override protected void LookForSwipes()
+    override protected List<Swipe> FindSwipes()
     {
         var swipes = new List<Swipe>();
         bool isSwiped = (Input.GetMouseButton(0) && !Input.GetMouseButton(1)) || (Input.GetMouseButton(1) && !Input.GetMouseButton(0));
@@ -14,13 +14,10 @@ public class MouseInterface : UserInterface
         {
            swipes.Add(ComputeSwipe()); 
         }
-        if (swipes.Count > 0)
-        {
-            SendSwipes(swipes);
-        }
+        return swipes;
     }
 
-    override protected void LookForPinches()
+    override protected List<Pinch> FindPinches()
     {
         var pinches = new List<Pinch>();
         bool isPinched = (Input.GetMouseButton(0) && Input.GetMouseButton(1));
@@ -28,6 +25,7 @@ public class MouseInterface : UserInterface
         {
             pinches.Add(ComputePinch());
         }
+        return pinches;
     }
 
     private Swipe ComputeSwipe()
@@ -40,6 +38,9 @@ public class MouseInterface : UserInterface
     private Pinch ComputePinch()
     {
         Vector2 dir = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+        float power = dir.magnitude;
+        dir.Normalize();
+        return new Pinch(dir, power);
     }
 }
 

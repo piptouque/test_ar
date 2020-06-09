@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public struct Swipe
@@ -8,22 +9,11 @@ public struct Swipe
     
     public Swipe(Vector2 dir, float speed)
     {
-        var normalised = dir.normalized;
         /* around y axis */
-        Dir = dir;
+        Dir = dir.normalized;
         Speed = speed;
     }
     
-    public Vector2 AsLateral()
-    {
-        return new Vector2(Dir.x * Speed, 0.0f);
-    }
-
-    public Vector2 AsVertical()
-    {
-        return new Vector2(0.0f, Dir.y * Speed);
-    }
-
     public Quaternion ToRotation()
     {
         /* around y axis */

@@ -37,6 +37,22 @@ public class ApplicationManager : MonoBehaviour
         HideManagersAndWrappers();
     }
 
+    void ClearApplicationScenes()
+    {
+        if (isSceneLoaded("MenuScene"))
+        {
+            UnloadMenu();
+        }
+
+        if (isSceneLoaded("CalibrationScene"))
+        {
+            UnloadCalibration();
+        }
+        if (isSceneLoaded("GameScene"))
+        {
+            UnloadGame();
+        }
+    }
 
 
     void Update()
@@ -50,14 +66,17 @@ public class ApplicationManager : MonoBehaviour
         {
             _shouldLoadCalibration = false;
             LoadCalibration();
-            UnloadMenu();
         }
         else if (_shouldLoadGame)
         {
             _shouldLoadGame = false;
             LoadGame();
-            UnloadCalibration();
         }
+        else
+        {
+            return;
+        }
+        ClearApplicationScenes();
     }
 
     public static void DemandLoadMenu()
@@ -74,6 +93,13 @@ public class ApplicationManager : MonoBehaviour
     {
         _shouldLoadGame = true;
     }
+
+    private static bool isSceneLoaded(string sceneName)
+    {
+        return SceneManager.GetSceneByName(sceneName).isLoaded;
+    }
+    
+    
     
     private void HideManagersAndWrappers()
     {
@@ -136,7 +162,7 @@ public class ApplicationManager : MonoBehaviour
        
         /* loading done! */
         
-        /* moving the appropriate objects to the Calibration Scene */
+        /* moving the appropriate objects to the scene */
         MoveUsedObjectsToScene(sceneName, sceneWrapper);
         /* activating the corresponding Manager and Wrapper*/
         sceneManager.SetActive(true);

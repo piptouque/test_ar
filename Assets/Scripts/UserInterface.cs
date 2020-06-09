@@ -14,16 +14,33 @@ public abstract class UserInterface : MonoBehaviour
         LookForPinches();
     }
 
-    protected abstract void LookForSwipes();
+    protected void LookForSwipes()
+    {
+        var swipes = FindSwipes();
+        if (swipes.Count > 0)
+        {
+            SendSwipes(swipes);
+        }
+    }
 
-    protected abstract void LookForPinches();
+    protected void LookForPinches()
+    {
+        var pinches = FindPinches();
+        if (pinches.Count > 0)
+        {
+            SendPinches(pinches);
+        }
+    }
 
-    protected void SendSwipes(List<Swipe> swipes)
+    protected abstract List<Swipe> FindSwipes();
+    protected abstract List<Pinch> FindPinches();
+
+    private void SendSwipes(List<Swipe> swipes)
     {
         OnSwipes(swipes);
     }
 
-    protected void SendPinches(List<Pinch> pinches)
+    private void SendPinches(List<Pinch> pinches)
     {
         OnPinches(pinches);
     }

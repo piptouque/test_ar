@@ -12,14 +12,15 @@ using UnityEngine.XR.ARSubsystems;
 public class CalibrationManager : MonoBehaviour
 {
     public GameObject placementIndicator;
-    public GameObject objectToPlace;
+    public GameObject objectWrapper;
     
     private ARSessionOrigin _arOrigin;
     private ARRaycastManager _arOriginRaycast;
 
     private Pose _placementPose;
-    private Pose _placementPoseCurrent;
     private bool _placementPoseIsValid;
+    private Pose _placementPoseCurrent;
+    private bool _placementPoseCurrentIsValid;
     private bool _positionIsLocked;
 
     private IRaycaster _raycaster;
@@ -50,9 +51,17 @@ public class CalibrationManager : MonoBehaviour
         ResetCalibration();
     }
 
-    public void GoToGame()
+    private void GoToGame()
     {
         ApplicationManager.DemandLoadGame();
+    }
+
+    public void ConfirmObject()
+    {
+        if (_placementPoseCurrentIsValid)
+        {
+            GoToGame();
+        }
     }
 
     public void ResetCalibration()
@@ -64,6 +73,7 @@ public class CalibrationManager : MonoBehaviour
         _placementPoseCurrent = _placementPose;
         _positionIsLocked = false;
         _placementPoseIsValid = false;
+        _placementPoseCurrentIsValid = false;
         HideObject();
     }
 
@@ -80,7 +90,7 @@ public class CalibrationManager : MonoBehaviour
         UpdatePositionPose();
         UpdatePlacementIndicator();
 
-        if (!_placementPoseIsValid)
+        if (!_placementPoseCurrentIsValid)
         {
             HideObject();
         }
@@ -93,17 +103,17 @@ public class CalibrationManager : MonoBehaviour
 
     private void HideObject()
     {
-        objectToPlace.SetActive(false);
+        objectWrapper.SetActive(false);
     }
 
     private void ShowObject()
     {
-        objectToPlace.SetActive(true);
+        objectWrapper.SetActive(true);
     }
 
     private void PlaceObject()
     {
-        objectToPlace.transform.SetPositionAndRotation(_placementPoseCurrent.position, _placementPose.rotation);
+        objectWrapper.transform.SetPositionAndRotation(_placementPoseCurrent.position, _placementPose.rotation);
     }
     
 
@@ -132,6 +142,7 @@ public class CalibrationManager : MonoBehaviour
         if (_placementPoseIsValid)
         {
             _placementPose.position = pos;
+            _placementPoseCurrentIsValid = true;
         }
 
         if (!_positionIsLocked)
@@ -148,6 +159,11 @@ public class CalibrationManager : MonoBehaviour
 
     private void UserInterface_OnSwipesRotate(List<Swipe> swipes)
     {
+        if (!gameObject.activeSelf)
+        {
+            /* nothing to do if de-activated */
+            return;
+        }
         /*
          * todo: find better way to choose direction
          * right now we just take the 'fastest swipe'
