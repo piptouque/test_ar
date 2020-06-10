@@ -13,10 +13,10 @@ public class ApplicationManager : MonoBehaviour
      */
     [SerializeField]
     private GameObject arOrigin;
+
+    [SerializeField] private GameObject menuManager, calibrationManager, gameManager, uiManager;
     [SerializeField]
-    private GameObject menuManager, calibrationManager, gameManager;
-    [SerializeField]
-    private GameObject menuWrapper, calibrationWrapper, gameWrapper;
+    private GameObject menuWrapper, calibrationWrapper, gameWrapper, uiWrapper;
     
 
     /*
@@ -26,31 +26,38 @@ public class ApplicationManager : MonoBehaviour
     [SerializeField]
     private GameObject contentWrapper;
 
-    private static bool _shouldLoadMenu, _shouldLoadCalibration, _shouldLoadGame;
+    private static bool _shouldLoadMenu, _shouldLoadCalibration, _shouldLoadGame, _shouldLoadUITest;
 
     void Start()
     {
-        _shouldLoadMenu = true;
+        _shouldLoadMenu = false;
         _shouldLoadCalibration = false;
         _shouldLoadGame = false;
+        _shouldLoadUITest = false;
         
         HideManagersAndWrappers();
+        DemandLoadMenu();
     }
 
     void ClearApplicationScenes()
     {
-        if (isSceneLoaded("MenuScene"))
+        if (IsSceneLoaded("MenuScene"))
         {
             UnloadMenu();
         }
 
-        if (isSceneLoaded("CalibrationScene"))
+        if (IsSceneLoaded("CalibrationScene"))
         {
             UnloadCalibration();
         }
-        if (isSceneLoaded("GameScene"))
+        if (IsSceneLoaded("GameScene"))
         {
             UnloadGame();
+        }
+
+        if (IsSceneLoaded("UITestScene"))
+        {
+            UnloadUITest();
         }
     }
 
@@ -71,6 +78,11 @@ public class ApplicationManager : MonoBehaviour
         {
             _shouldLoadGame = false;
             LoadGame();
+        }
+        else if (_shouldLoadUITest)
+        {
+            _shouldLoadUITest = false;
+            LoadUITest();
         }
         else
         {
@@ -94,7 +106,12 @@ public class ApplicationManager : MonoBehaviour
         _shouldLoadGame = true;
     }
 
-    private static bool isSceneLoaded(string sceneName)
+    public static void DemandLoadUITest()
+    {
+        _shouldLoadUITest = true;
+    }
+
+    private static bool IsSceneLoaded(string sceneName)
     {
         return SceneManager.GetSceneByName(sceneName).isLoaded;
     }
@@ -106,10 +123,12 @@ public class ApplicationManager : MonoBehaviour
         menuManager.SetActive(false);
         calibrationManager.SetActive(false);
         gameManager.SetActive(false);
+        uiManager.SetActive(false);
         
         menuWrapper.SetActive(false);
         calibrationWrapper.SetActive(false);
         gameWrapper.SetActive(false);
+        uiWrapper.SetActive(false);
         
         /* also disables camera */
         arOrigin.SetActive(false);
@@ -130,6 +149,11 @@ public class ApplicationManager : MonoBehaviour
         StartCoroutine(LoadAsyncScene("GameScene", gameManager, gameWrapper, true));
     }
 
+    private void LoadUITest()
+    {
+        StartCoroutine(LoadAsyncScene("UITestScene", uiManager, uiWrapper, true));
+    }
+
     private void UnloadMenu()
     {
         UnloadAsyncScene("MenuScene", menuManager, menuWrapper);
@@ -143,6 +167,11 @@ public class ApplicationManager : MonoBehaviour
     private void UnloadGame()
     {
         UnloadAsyncScene("GameScene", gameManager, gameWrapper);
+    }
+    
+    private void UnloadUITest()
+    {
+        UnloadAsyncScene("UITestScene", uiManager, uiWrapper);
     }
     
     

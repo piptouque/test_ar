@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using System.Threading;
-using TMPro;
-using UnityEngine;
-using UnityEngine.Animations;
+﻿using UnityEngine;
 
 public class CameraMovement : MonoBehaviour
 {
     /*
-     * if we are in the editor, the camera should not be controlled thus.
+     * should only be added as a component if the platform is mobile.
      */
-    private static bool _enabled;
     [SerializeField]
-    private float movementSpeed = 10.0f;
+    private float movementSpeed = 3.0f;
 
     [SerializeField] private float rotationSpeed = 0.3f;
 
@@ -22,18 +14,9 @@ public class CameraMovement : MonoBehaviour
     private Vector2 _mousePositionLast = new Vector2(0.5f, 0.5f);
 
 
-    void Start()
-    {
-        _enabled = Application.isEditor;
-    }
-
     // Update is called once per frame
     void Update()
     {
-        if (!_enabled)
-        {
-           return;
-        }
         Rotate();
         Move();
     }

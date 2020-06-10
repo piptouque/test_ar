@@ -32,14 +32,14 @@ public class CalibrationManager : MonoBehaviour
         
         _arOrigin = FindObjectOfType<ARSessionOrigin>();
         _arOriginRaycast = _arOrigin.GetComponent<ARRaycastManager>();
-
-        if (Application.isEditor)
+        
+        if (Application.isMobilePlatform)
         {
-            _raycaster = new GameSpaceRaycaster();
+            _raycaster = new PhysicalSpaceRaycaster(_arOriginRaycast);
         }
         else
         {
-            _raycaster = new PhysicalSpaceRaycaster(_arOriginRaycast);
+            _raycaster = new GameSpaceRaycaster();
         }
         
         ResetCalibration();

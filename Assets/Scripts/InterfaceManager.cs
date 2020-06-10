@@ -6,16 +6,16 @@ public class InterfaceManager : MonoBehaviour
     private void Awake()
     {
         /*
-         * If we are in the editor
+         * If we are on mobile
          * we control through mouse and keyboard
          */
-        if (Application.isEditor)
+        if (Application.isMobilePlatform)
         {
-           gameObject.AddComponent(typeof(MouseInterface));
+           gameObject.AddComponent(typeof(TouchInterface));
         }
         else
         {
-           gameObject.AddComponent(typeof(TouchInterface));
+           gameObject.AddComponent(typeof(MouseInterface));
         }
     }
 }
